@@ -52,7 +52,9 @@ public class BankAccount {
     }
 
     public void withdraw(Transaction transaction) {
-        withdraw(transaction.getAmount());
-        transactions.add(new Transaction(transaction.getAmount().negate(), transaction.getDate(), transaction.getType(), balance));
+        if(transaction.getAmount().compareTo(BigDecimal.ZERO) != 0) {
+            withdraw(transaction.getAmount());
+            transactions.add(new Transaction(transaction.getAmount().negate(), transaction.getDate(), transaction.getType(), balance));
+        }
     }
 }

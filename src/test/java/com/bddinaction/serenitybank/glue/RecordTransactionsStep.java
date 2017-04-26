@@ -22,10 +22,10 @@ public class RecordTransactionsStep {
     private com.bddinaction.serenitybank.accounts.AccountService accountService = new AccountService();
     private String accountNumber;
 
-    @Given("^Joe opened a Current account on (.*) with balance €(\\d+)$")
-    public void joeOpenedACurrentAccountOnWithBalance€(String depositDate, int amount) throws Throwable {
+    @Given("^Joe opened a (.*) account on (.*) with balance €(\\d+)$")
+    public void joeOpenedACurrentAccountOnWithBalance€(AccountType accountType, String depositDate, int amount) throws Throwable {
         LocalDate transactionDate = LocalDate.parse(depositDate, formatter);
-        accountNumber = accountService.createNewAccount(AccountType.Current, BigDecimal.valueOf(amount), transactionDate);
+        accountNumber = accountService.createNewAccount(accountType, BigDecimal.valueOf(amount), transactionDate);
     }
 
 
@@ -46,6 +46,6 @@ public class RecordTransactionsStep {
     public void hisTransactionHistoryShouldInclude(List<TransactionFormat> transactionHistory) throws Throwable {
         FullTransactionPrinter printer = new FullTransactionPrinter();
         accountService.printTransactions(accountNumber, printer);
-        Assert.assertEquals( transactionHistory, printer.asList());
+        Assert.assertEquals(transactionHistory, printer.asList());
     }
 }

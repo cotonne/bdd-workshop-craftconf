@@ -24,8 +24,8 @@ public class AccountService {
     public String createNewAccount(AccountType type, BigDecimal initialDeposit, LocalDate creationDate) {
         String accountNumber = Integer.toString(accountNumberCounter.incrementAndGet());
         BankAccount newAccount = new BankAccount(accountNumber, type);
-        newAccount.deposit(new Transaction(initialDeposit, creationDate, "deposit", initialDeposit));
         accounts.put(accountNumber, newAccount);
+        makeDeposit(accountNumber, initialDeposit, creationDate);
         return accountNumber;
     }
 
@@ -57,16 +57,18 @@ public class AccountService {
     public void makeDeposit(String accountNumber, BigDecimal amount, LocalDate depositDate) {
         BankAccount account = accounts.get(accountNumber);
         account.deposit(new Transaction(amount, depositDate, "deposit"));
-        account.withdraw(DepositFee.forAccountType(account.getType()).apply(amount));
+        account.withdraw(new Transaction(DepositFee.forAccountType(account.getType()).apply(amount), depositDate, "fee"));
     }
 
     //todo : to remove one day
+    @Deprecated
     public void makeDeposit(String accountNumber, BigDecimal amount) {
         BankAccount account = accounts.get(accountNumber);
         account.deposit(amount);
         account.withdraw(DepositFee.forAccountType(account.getType()).apply(amount));
     }
 
+    @Deprecated
     public String createNewAccount(AccountType accountType, BigDecimal initialBalance) {
         String accountNumber = Integer.toString(accountNumberCounter.incrementAndGet());
         return createNewAccount(accountNumber, accountType, initialBalance);
